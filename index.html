@@ -34,7 +34,9 @@
     input[type="file"] { display:none; }
     .checks { display:grid; gap:7px; max-height:290px; overflow:auto; }
     .check { display:flex; align-items:center; gap:8px; font-size:13px; }
-    .check input { accent-color:var(--blue); }
+    .check input { accent-color:var(--blue); flex:0 0 auto; }
+    .type-name { display:flex; align-items:center; gap:0; min-width:0; }
+    .type-code { display:block; margin-left:14px; color:var(--muted); font-size:10px; }
     .check .count { margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; }
     .hint { color:var(--muted); font-size:12px; line-height:1.6; }
     .status { padding:9px 10px; border-radius:8px; background:#eff6ff; color:#1d4ed8; font-size:12px; line-height:1.5; }
@@ -82,7 +84,7 @@
     </div>
 
     <div class="section">
-      <h2>学校種別で絞り込み</h2>
+      <h2>学校種別で絞り込み</h2><p class="hint">P29_003のコードを学校種別名に変換し、種別ごとに異なる色で表示します。</p>
       <div style="display:flex;gap:8px;margin-bottom:9px">
         <button id="all" disabled>すべて選択</button>
         <button id="none" disabled>すべて解除</button>
@@ -167,8 +169,12 @@
       const label = document.createElement("label");
       label.className = "check";
       const checked = selectedTypes.has(code);
+      const typeName = SCHOOL_TYPES[code] || `未定義コード (${code})`;
       label.innerHTML = `<input type="checkbox" value="${escapeHtml(code)}" ${checked ? "checked" : ""}>
-        <span><span class="legend-dot" style="background:${colorByType[code] || "#64748b"}"></span>${escapeHtml(SCHOOL_TYPES[code] || "未定義コード (" + code + ")")}</span>
+        <span class="type-name">
+          <span class="legend-dot" style="background:${colorByType[code] || "#64748b"}"></span>
+          <span>${escapeHtml(typeName)}<small class="type-code">${escapeHtml(code)}</small></span>
+        </span>
         <span class="count">${typeCounts[code].toLocaleString("ja-JP")}</span>`;
       label.querySelector("input").addEventListener("change", e => {
         if (e.target.checked) selectedTypes.add(code); else selectedTypes.delete(code);
